@@ -1,9 +1,7 @@
 import base64
-
 import os
 import re
 from io import BytesIO
-import numpy as np
 from PIL import Image
 import torch
 import torchvision.transforms as transforms
