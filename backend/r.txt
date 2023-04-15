@@ -1,14 +1,10 @@
 flask
+flask-cors
 elasticsearch
 torch
 requests
-PIL
+pillow
 bs4
-os
-json
 torchvision
-re
-io
-base64
 numpy
 matplotlib
