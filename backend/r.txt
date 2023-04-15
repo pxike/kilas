@@ -1,0 +1,14 @@
+flask
+elasticsearch
+torch
+requests
+PIL
+bs4
+os
+json
+torchvision
+re
+io
+base64
+numpy
+matplotlib
