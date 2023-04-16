@@ -26,9 +26,7 @@ services:
       - "5601:5601"
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: kilas.backend:0.6.9
     container_name: backend
     networks:
       - app-network
@@ -36,8 +34,12 @@ services:
       - "5000:5000"
 
   frontend:
-    image: kilas-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: frontend
+    depends_on:
+      - backend
     networks:
       - app-network
     ports:
