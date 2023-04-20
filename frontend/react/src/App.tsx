@@ -5,20 +5,20 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 
 type modeloutput = {
-  output: { vector: Array<number> };
-  setoutput: React.Dispatch<React.SetStateAction<{ vector: Array<number> }>>;
+  output:  Array<string> ;
+  setoutput: React.Dispatch<React.SetStateAction< Array<string> >>;
 };
 
 
 export const elas = React.createContext<modeloutput>({
-  output: { vector: new Array(1000) },
+  output: Array() ,
   setoutput: () => {},
 });
 
 
 function App() {
 
-  const [output, setoutput] = useState<{ vector: Array<number> }>({ vector: new Array(1000) });
+  const [output, setoutput] = useState<Array<string> >([]);
 
   return (
     <elas.Provider value = {{output,setoutput}}>

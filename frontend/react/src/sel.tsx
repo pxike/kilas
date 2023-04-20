@@ -1,8 +1,21 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from "react";
-import axios from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 import { elas } from "./App";
+import { searches } from "./api";
 
 
+interface Feature {
+  vector: number[];
+}
+
+interface SearchResult {
+  hits: {
+    hits:{
+      _id: string;
+      _source: {url :string};
+    }[];
+  };
+}
 export function Sel({}) {
   const fileUploadRef = useRef<HTMLInputElement>(null);
   const [img, setimg] = useState<File>();
@@ -45,16 +58,38 @@ export function Sel({}) {
   const sendclick = () => {
     console.log(base64);
     axios
-      .post("http://localhost:5000/predict", { data: base64 })
-      .then(
-        (response) => {
+      .post<Feature>("http://localhost:5000/predict", { data: base64 })
+      .then((response) => {
         console.log(response.data);
-        setfeature(response.data);
-        if (feature != undefined ) {elaset.setoutput(feature);}
-      }
-        )
-      .catch((error) => console.log(error));
-  };
+        const feature = response.data;
+        setfeature(feature);
+        if (feature !== undefined) {
+          return axios.post<SearchResult>(
+            `http://localhost:9200/pic/_search`,
+            {
+              knn: {
+                field: "crd",
+                query_vector: feature.vector,
+                k: 10,
+                num_candidates: 100
+              },
+              _source: ["_id", "url"]
+            }
+          );
+        } else {
+          return undefined;
+        }
+      })
+      .then((result: AxiosResponse<SearchResult> | undefined) => {
+        if (result !== undefined) {
+          const hits = result.data.hits.hits.map((hit)=> hit._source.url);
+          console.log(hits);
+          elaset.setoutput(hits)
+          console.log("elaset stuff :"+ elaset.output)
+        }
+      })
+      .catch((error) => console.error(error));
+  };;
 
   return (
     <div className="rounded-md bg-gray-500 hover:bg-gray-400 h-4/5 p-5 w-1/4 mr-4 transition duration-500 ">
